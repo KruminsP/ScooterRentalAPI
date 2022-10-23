@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScooterRental", "ScooterRen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScooterRental.tests", "ScooterRental.tests\ScooterRental.tests.csproj", "{15231C45-6F91-457C-A2BD-0E2BF7BA0EC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScooterRentalAPI", "ScooterRentalAPI\ScooterRentalAPI.csproj", "{ECCF9D91-534F-45EE-AE1B-16FC7A8DE316}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{15231C45-6F91-457C-A2BD-0E2BF7BA0EC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15231C45-6F91-457C-A2BD-0E2BF7BA0EC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15231C45-6F91-457C-A2BD-0E2BF7BA0EC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECCF9D91-534F-45EE-AE1B-16FC7A8DE316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECCF9D91-534F-45EE-AE1B-16FC7A8DE316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECCF9D91-534F-45EE-AE1B-16FC7A8DE316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECCF9D91-534F-45EE-AE1B-16FC7A8DE316}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
