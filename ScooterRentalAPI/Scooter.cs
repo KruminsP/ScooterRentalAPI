@@ -1,14 +1,15 @@
-﻿namespace ScooterRentalAPI
+﻿using System.Runtime.InteropServices.ComTypes;
+
+namespace ScooterRentalAPI
 {
     public class Scooter
     {
-        public Scooter(string id, decimal pricePerMinute)
+        public Scooter(decimal pricePerMinute)
         {
-            Id = id;
             PricePerMinute = pricePerMinute;
             IsRented = false;
         }
-        public string Id { get; }
+        public int Id { get; set; }
         public decimal PricePerMinute { get; }
         public bool IsRented { get; set; }
     }

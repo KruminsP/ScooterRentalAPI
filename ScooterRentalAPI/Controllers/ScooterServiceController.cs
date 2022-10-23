@@ -7,7 +7,7 @@ namespace FlightPlanner.Controllers
 {
     [Microsoft.AspNetCore.Components.Route("admin-api")]
     [ApiController]
-    public class AdminApiController : ControllerBase
+    public class ScooterServiceController : ControllerBase
     {
         [Route("scooters")]
         [HttpPost]
@@ -18,13 +18,18 @@ namespace FlightPlanner.Controllers
                 return Conflict();
             }
 
+            if (scooter.PricePerMinute < 0)
+            {
+                return BadRequest("Price cannot be negative");
+            }
+
             ScooterService.AddScooter(scooter);
             return Created("", scooter);
         }
 
         [Route("scooters/{id}")]
         [HttpGet]
-        public IActionResult GetScooter(string id)
+        public IActionResult GetScooter(int id)
         {
             var scooter = ScooterService.GetScooterById(id);
 
@@ -38,7 +43,7 @@ namespace FlightPlanner.Controllers
 
         [Route("scooters/{id}")]
         [HttpDelete]
-        public IActionResult DeleteScooter(string id)
+        public IActionResult DeleteScooter(int id)
         {
             ScooterService.RemoveScooter(id);
 

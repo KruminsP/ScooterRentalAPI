@@ -9,11 +9,7 @@ namespace ScooterRentalAPI
     public class ScooterService : IScooterService
     {
         private static readonly List<Scooter> _scooters = new List<Scooter>();
-
-        //public ScooterService(List<Scooter> inventory)
-        //{
-        //    _scooters = inventory;
-        //}
+        private static int _Id = 0;
 
         public static Scooter AddScooter(Scooter scooter)
         {
@@ -23,6 +19,7 @@ namespace ScooterRentalAPI
                 throw new DuplicateScooterException(scooter.Id);
             }
 
+            scooter.Id = ++_Id;
             _scooters.Add(scooter);
 
             return scooter;
@@ -40,7 +37,7 @@ namespace ScooterRentalAPI
             //return scooter;
         }
 
-        public static void RemoveScooter(string id)
+        public static void RemoveScooter(int id)
         {
             Validator.ScooterIdValidator(id);
 
@@ -56,7 +53,7 @@ namespace ScooterRentalAPI
             return _scooters.ToList();
         }
 
-        public static Scooter GetScooterById(string scooterId)
+        public static Scooter GetScooterById(int scooterId)
         {
             Scooter scooter = _scooters.FirstOrDefault(scooter => scooter.Id == scooterId);
 

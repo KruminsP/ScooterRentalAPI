@@ -4,9 +4,9 @@ namespace ScooterRentalAPI.Validators
 {
     public static class Validator
     {
-        public static void ScooterIdValidator(string id)
+        public static void ScooterIdValidator(int id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (id==null)
             {
                 throw new InvalidIdException();
             }

@@ -4,7 +4,7 @@ namespace ScooterRentalAPI.Exceptions
 {
     public class DuplicateScooterException : Exception
     {
-        public DuplicateScooterException(string id) :
+        public DuplicateScooterException(int id) :
             base($"Scooter with id {id} already exists") { }
     }
 }
