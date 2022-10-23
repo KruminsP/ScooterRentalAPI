@@ -32,29 +32,29 @@ namespace ScooterRental
             _scooters.Add(new Scooter(id, pricePerMinute));
         }
 
-        public void RemoveScooter(string id)
-        {
-            Validator.ScooterIdValidator(id);
+        //public void RemoveScooter(string id)
+        //{
+        //    Validator.ScooterIdValidator(id);
 
-            Scooter scooter = _scooters.FirstOrDefault(scooter => scooter.Id == id);
+        //    Scooter scooter = _scooters.FirstOrDefault(scooter => scooter.Id == id);
 
-            Validator.ScooterExistingValidator(scooter, id);
+        //    Validator.ScooterExistingValidator(scooter, id);
 
-            _scooters.Remove(scooter);
-        }
+        //    _scooters.Remove(scooter);
+        //}
 
-        public IList<Scooter> GetScooters()
-        {
-            return _scooters.ToList();
-        }
+        //public IList<Scooter> GetScooters()
+        //{
+        //    return _scooters.ToList();
+        //}
 
-        public Scooter GetScooterById(string scooterId)
-        {
-            Scooter scooter = _scooters.FirstOrDefault(scooter => scooter.Id == scooterId);
+        //public Scooter GetScooterById(string scooterId)
+        //{
+        //    Scooter scooter = _scooters.FirstOrDefault(scooter => scooter.Id == scooterId);
 
-            Validator.ScooterExistingValidator(scooter, scooterId);
+        //    Validator.ScooterExistingValidator(scooter, scooterId);
 
-            return _scooters.FirstOrDefault(scooterById => scooterById.Id == scooterId);
-        }
+        //    return _scooters.FirstOrDefault(scooterById => scooterById.Id == scooterId);
+        //}
     }
 }
