@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using ScooterRentalAPI;
 
 namespace FlightPlanner.Controllers
@@ -13,7 +11,7 @@ namespace FlightPlanner.Controllers
         [HttpPost]
         public IActionResult StartRent(int id)
         {
-            if (ScooterService.GetScooterById(id)==null)
+            if (ScooterService.GetScooterById(id) == null)
             {
                 return NotFound("No such scooter");
             }
@@ -55,11 +53,11 @@ namespace FlightPlanner.Controllers
             return Ok(RentalCompany.GetAllRentedScooters());
         }
 
-        [Route("income")]
+        [Route("rental/income")]
         [HttpGet]
-        public IActionResult CalculateIncome(int year, bool includeRented)
+        public IActionResult CalculateIncome(IncomeRequest request)
         {
-            var income = RentalCompany.CalculateIncome(year, includeRented);
+            var income = RentalCompany.CalculateIncome(request.Year, request.IncludeRented);
 
             return Ok(income);
         }
