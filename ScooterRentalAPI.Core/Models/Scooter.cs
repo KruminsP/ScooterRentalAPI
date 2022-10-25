@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices.ComTypes;
 
-namespace ScooterRentalAPI
+namespace ScooterRentalAPI.Core.Models
 {
     public class Scooter
     {
@@ -10,7 +10,7 @@ namespace ScooterRentalAPI
             IsRented = false;
         }
         public int Id { get; set; }
-        public decimal PricePerMinute { get; }
+        public decimal PricePerMinute { get; set; }
         public bool IsRented { get; set; }
     }
 }

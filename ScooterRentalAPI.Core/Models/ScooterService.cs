@@ -1,10 +1,10 @@
 ﻿using ScooterRentalAPI.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using ScooterRentalAPI.Core.Validators;
 using ScooterRentalAPI.Exceptions;
-using ScooterRentalAPI.Validators;
 
-namespace ScooterRentalAPI
+namespace ScooterRentalAPI.Core.Models
 {
     public class ScooterService : IScooterService
     {

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using ScooterRentalAPI;
+﻿using Microsoft.AspNetCore.Mvc;
+using ScooterRentalAPI.Core.Models;
 
-namespace FlightPlanner.Controllers
+namespace ScooterRentalAPI.Controllers
 {
     [Microsoft.AspNetCore.Components.Route("admin-api")]
     [ApiController]

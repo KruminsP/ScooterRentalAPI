@@ -1,54 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ScooterRental.Exceptions;
-using ScooterRental.Interfaces;
+using ScooterRentalAPI.Interfaces;
 
-namespace ScooterRental
+namespace ScooterRentalAPI.Core.Models
 {
     public class RentalCompany : IRentalCompany
     {
         public string Name { get; }
-        private IScooterService _service;
-        private List<RentedScooters> _rentedScooters;
-        private Calculators _feeCalculator;
+        private static List<RentedScooter> _rentedScooters = new List<RentedScooter>();
+        private static Calculators _feeCalculator = new Calculators();
 
-        public RentalCompany(string name, IScooterService service, List<RentedScooters> rentedScooters)
+        public RentalCompany(string name)
         {
             Name = name;
-            _service = service;
-            _rentedScooters = rentedScooters;
-            _feeCalculator = new Calculators();
         }
 
-        public void StartRent(string id)
+        public static RentedScooter StartRent(int id)
         {
-            var scooter = _service.GetScooterById(id);
+            var scooter = ScooterService.GetScooterById(id);
 
-            if (scooter.IsRented)
-            {
-                throw new ScooterAlreadyRentedException(id);
-            }
+            //if (scooter.IsRented)
+            //{
+            //    return ScooterAlreadyRentedException();
+            //}
 
             scooter.IsRented = true;
-            _rentedScooters.Add(new RentedScooters(scooter.Id, DateTime.UtcNow, scooter.PricePerMinute));
+            var rentedScooter = new RentedScooter(scooter.Id, DateTime.UtcNow, scooter.PricePerMinute);
+            _rentedScooters.Add(rentedScooter);
+
+            return rentedScooter;
         }
 
-        public decimal EndRent(string id)
+        public static decimal EndRent(int id)
         {
-            var scooter = _service.GetScooterById(id);
+            var scooter = ScooterService.GetScooterById(id);
             var rentedScooter = _rentedScooters.FirstOrDefault(s => s.Id == id && !s.EndTime.HasValue);
             
             rentedScooter.EndTime = DateTime.UtcNow;
             
-            var scooterFee = _feeCalculator.ScooterFeeCalculator(rentedScooter.StartTime, (DateTime)rentedScooter.EndTime, rentedScooter.PricePerMinute);
+            var scooterFee = _feeCalculator.ScooterFeeCalculator(rentedScooter.StartTime,
+                (DateTime)rentedScooter.EndTime, rentedScooter.PricePerMinute);
 
             scooter.IsRented = false;
 
             return scooterFee;
         }
 
-        public decimal CalculateIncome(int? year, bool includeNotCompletedRentals)
+        public static List<RentedScooter> GetAllRentedScooters()
+        {
+            return _rentedScooters;
+        }
+
+        public static decimal CalculateIncome(int? year, bool includeNotCompletedRentals)
         {
             decimal income = 0;
 
@@ -86,7 +90,7 @@ namespace ScooterRental
                                 scooter.PricePerMinute);
                         }
                     }
-                    else if(((DateTime)scooter.EndTime).Year == year)
+                    else if (((DateTime)scooter.EndTime).Year == year)
                     {
                         income += _feeCalculator.ScooterFeeCalculator(scooter.StartTime,
                             (DateTime)scooter.EndTime,
@@ -96,6 +100,11 @@ namespace ScooterRental
             }
 
             return income;
+        }
+
+        public static bool IsRented(Scooter scooter)
+        {
+            return scooter.IsRented;
         }
     }
 }
