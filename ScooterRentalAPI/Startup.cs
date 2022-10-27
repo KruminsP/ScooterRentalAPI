@@ -5,7 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ScooterRentalAPI.Core.Models;
+using ScooterRentalAPI.Core.Services;
 using ScooterRentalAPI.Data;
+using ScooterRentalAPI.Services;
 
 namespace ScooterRentalAPI
 {
@@ -33,8 +36,14 @@ namespace ScooterRentalAPI
                 options.UseSqlServer(Configuration.GetConnectionString("scooter-rental"));
             });
 
-            services.AddScoped<IScooterRentalAPIContext, ScooterRentalDbContext>();
+            services.AddScoped<IScooterRentalDbContext, ScooterRentalDbContext>();
+
             services.AddScoped<Calculators>();
+            services.AddScoped<IDbService, DbService>();
+            services.AddScoped<IEntityService<Scooter>, EntityService<Scooter>>();
+            services.AddScoped<IEntityService<RentedScooter>, EntityService<RentedScooter>>();
+            services.AddScoped<IRentalService, RentalService>();
+            services.AddScoped<IScooterService, ScooterService>();
 
             //// Default Policy
             //services.AddCors(options =>

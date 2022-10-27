@@ -1,21 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScooterRentalAPI.Core.Models;
-using ScooterRentalAPI.Data;
+using ScooterRentalAPI.Core.Services;
 using System;
-using System.Linq;
 
 namespace ScooterRentalAPI.Controllers
 {
-    [Microsoft.AspNetCore.Components.Route("admin-api")]
+    [Microsoft.AspNetCore.Components.Route("rental")]
     [ApiController]
     public class RentalCompanyController : ControllerBase
     {
-        private readonly ScooterRentalDbContext _context;
+        private readonly IRentalService _rentalService;
+        private readonly IScooterService _scooterService;
         private readonly Calculators _calculator;
 
-        public RentalCompanyController(ScooterRentalDbContext context, Calculators calculator)
+        public RentalCompanyController(
+            IRentalService rentalService,
+            IScooterService scooterService,
+            Calculators calculator)
         {
-            _context = context;
+            _rentalService = rentalService;
+            _scooterService = scooterService;
             _calculator = calculator;
         }
 
@@ -23,7 +27,8 @@ namespace ScooterRentalAPI.Controllers
         [HttpPost]
         public IActionResult StartRent(string name)
         {
-            var scooter = _context.Scooters.FirstOrDefault(s => s.Name == name);
+            var scooter = _scooterService.GetByName(name);
+
             if (scooter == null)
             {
                 return NotFound("No such scooter");
@@ -36,8 +41,7 @@ namespace ScooterRentalAPI.Controllers
 
             scooter.IsRented = true;
             var rentedScooter = new RentedScooter(name, DateTime.UtcNow, scooter.PricePerMinute);
-            _context.RentedScooters.Add(rentedScooter);
-            _context.SaveChanges();
+            _rentalService.Create(rentedScooter);
 
             return Created("", rentedScooter);
         }
@@ -46,8 +50,7 @@ namespace ScooterRentalAPI.Controllers
         [HttpPut]
         public IActionResult EndRent(string name)
         {
-            var scooter = _context.Scooters.FirstOrDefault(s => s.Name == name);
-
+            var scooter = _scooterService.GetByName(name);
             if (scooter == null)
             {
                 return NotFound("No such scooter");
@@ -57,18 +60,18 @@ namespace ScooterRentalAPI.Controllers
             {
                 return Conflict("Scooter is not rented out");
             }
-            
-            var rentedScooter = _context.RentedScooters.FirstOrDefault(s => s.Name == name);// && !s.EndTime.HasValue);
+
+            var rentedScooter = _rentalService.GetCurrentlyRentedScooter(name);
             if (rentedScooter == null)
             {
                 return Conflict("No such scooter");
             }
 
             rentedScooter.EndTime = DateTime.UtcNow;
+            _scooterService.ChangeScooterRentedStatus(name);
+
             var scooterFee = _calculator.ScooterFeeCalculator(rentedScooter.StartTime,
                 (DateTime)rentedScooter.EndTime, rentedScooter.PricePerMinute);
-            scooter.IsRented = false;
-            _context.SaveChanges();
 
             return Ok(scooterFee);
         }
@@ -77,7 +80,7 @@ namespace ScooterRentalAPI.Controllers
         [HttpGet]
         public IActionResult GetAllRentedScooters()
         {
-            return Ok(_context.RentedScooters);
+            return Ok(_rentalService.GetAll());
         }
 
         [Route("rental/income")]
@@ -88,7 +91,7 @@ namespace ScooterRentalAPI.Controllers
 
             if (request.Year == null)
             {
-                foreach (var scooter in _context.RentedScooters)
+                foreach (var scooter in _rentalService.GetAll())
                 {
                     if (scooter.EndTime == null)
                     {
@@ -109,7 +112,7 @@ namespace ScooterRentalAPI.Controllers
             }
             else // valid year
             {
-                foreach (var scooter in _context.RentedScooters)
+                foreach (var scooter in _rentalService.GetAll())
                 {
                     if (scooter.EndTime == null)
                     {
@@ -128,8 +131,6 @@ namespace ScooterRentalAPI.Controllers
                     }
                 }
             }
-
-            _context.SaveChanges();
 
             return Ok(income);
         }
