@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ScooterRentalAPI.Core.Models;
 using ScooterRentalAPI.Core.Services;
+using ScooterRentalAPI.Core.Validations;
 using ScooterRentalAPI.Data;
 using ScooterRentalAPI.Services;
 
@@ -38,12 +39,16 @@ namespace ScooterRentalAPI
 
             services.AddScoped<IScooterRentalDbContext, ScooterRentalDbContext>();
 
-            services.AddScoped<Calculators>();
+            services.AddScoped<Calculator>();
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IEntityService<Scooter>, EntityService<Scooter>>();
             services.AddScoped<IEntityService<RentedScooter>, EntityService<RentedScooter>>();
             services.AddScoped<IRentalService, RentalService>();
             services.AddScoped<IScooterService, ScooterService>();
+
+            services.AddScoped<IScooterValidator, ScooterValidator>();
+            services.AddScoped<IScooterValidator, ScooterNameValidator>();
+            services.AddScoped<IScooterValidator, ScooterPriceValidator>();
 
             //// Default Policy
             //services.AddCors(options =>

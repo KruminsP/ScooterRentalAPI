@@ -1,7 +1,9 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ScooterRentalAPI.Core.Models;
 using ScooterRentalAPI.Core.Services;
+using ScooterRentalAPI.Core.Validations;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ScooterRentalAPI.Controllers
 {
@@ -10,24 +12,28 @@ namespace ScooterRentalAPI.Controllers
     public class ScooterServiceController : ControllerBase
     {
         private readonly IScooterService _scooterService;
+        private readonly IEnumerable<IScooterValidator> _scooterValidators;
 
-        public ScooterServiceController(IScooterService scooterService)
+        public ScooterServiceController(
+            IScooterService scooterService,
+            IEnumerable<IScooterValidator> scooterValidators)
         {
             _scooterService = scooterService;
+            _scooterValidators = scooterValidators;
         }
 
         [Route("scooters")]
         [HttpPost]
         public IActionResult PostScooter(Scooter scooter)
         {
+            if (!_scooterValidators.All(f => f.IsValid(scooter)))
+            {
+                return BadRequest();
+            }
+
             if (_scooterService.GetAll().Any(s => s.Name == scooter.Name))
             {
                 return BadRequest("Name should be unique");
-            }
-
-            if (scooter.PricePerMinute < 0)
-            {
-                return BadRequest("Price cannot be negative");
             }
 
             _scooterService.Create(scooter);

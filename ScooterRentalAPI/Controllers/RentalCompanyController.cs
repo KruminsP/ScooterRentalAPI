@@ -11,12 +11,12 @@ namespace ScooterRentalAPI.Controllers
     {
         private readonly IRentalService _rentalService;
         private readonly IScooterService _scooterService;
-        private readonly Calculators _calculator;
+        private readonly Calculator _calculator;
 
         public RentalCompanyController(
             IRentalService rentalService,
             IScooterService scooterService,
-            Calculators calculator)
+            Calculator calculator)
         {
             _rentalService = rentalService;
             _scooterService = scooterService;
@@ -69,7 +69,6 @@ namespace ScooterRentalAPI.Controllers
 
             rentedScooter.EndTime = DateTime.UtcNow;
             _scooterService.ChangeScooterRentedStatus(name);
-
             var scooterFee = _calculator.ScooterFeeCalculator(rentedScooter.StartTime,
                 (DateTime)rentedScooter.EndTime, rentedScooter.PricePerMinute);
 
@@ -87,50 +86,7 @@ namespace ScooterRentalAPI.Controllers
         [HttpGet]
         public IActionResult CalculateIncome(IncomeRequest request)
         {
-            decimal income = 0;
-
-            if (request.Year == null)
-            {
-                foreach (var scooter in _rentalService.GetAll())
-                {
-                    if (scooter.EndTime == null)
-                    {
-                        if (request.IncludeRented)
-                        {
-                            income += _calculator.ScooterFeeCalculator(scooter.StartTime,
-                                DateTime.UtcNow,
-                                scooter.PricePerMinute);
-                        }
-                    }
-                    else
-                    {
-                        income += _calculator.ScooterFeeCalculator(scooter.StartTime,
-                            (DateTime)scooter.EndTime,
-                            scooter.PricePerMinute);
-                    }
-                }
-            }
-            else // valid year
-            {
-                foreach (var scooter in _rentalService.GetAll())
-                {
-                    if (scooter.EndTime == null)
-                    {
-                        if (request.IncludeRented)
-                        {
-                            income += _calculator.ScooterFeeCalculator(scooter.StartTime,
-                                DateTime.UtcNow,
-                                scooter.PricePerMinute);
-                        }
-                    }
-                    else if (((DateTime)scooter.EndTime).Year == request.Year)
-                    {
-                        income += _calculator.ScooterFeeCalculator(scooter.StartTime,
-                            (DateTime)scooter.EndTime,
-                            scooter.PricePerMinute);
-                    }
-                }
-            }
+            var income = _calculator.CalculateIncome(request);
 
             return Ok(income);
         }
