@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScooterRentalAPI.Core.Models;
+using ScooterRentalAPI.Data;
+using System;
+using System.Linq;
 
 namespace ScooterRentalAPI.Controllers
 {
@@ -7,57 +10,126 @@ namespace ScooterRentalAPI.Controllers
     [ApiController]
     public class RentalCompanyController : ControllerBase
     {
-        [Route("rental/{id}")]
-        [HttpPost]
-        public IActionResult StartRent(int id)
+        private readonly ScooterRentalDbContext _context;
+        private readonly Calculators _calculator;
+
+        public RentalCompanyController(ScooterRentalDbContext context, Calculators calculator)
         {
-            if (ScooterService.GetScooterById(id) == null)
+            _context = context;
+            _calculator = calculator;
+        }
+
+        [Route("rental/{name}")]
+        [HttpPost]
+        public IActionResult StartRent(string name)
+        {
+            var scooter = _context.Scooters.FirstOrDefault(s => s.Name == name);
+            if (scooter == null)
             {
                 return NotFound("No such scooter");
             }
 
-            if (ScooterService.GetScooterById(id).IsRented)
+            if (scooter.IsRented)
             {
                 return Conflict("Scooter already rented");
             }
 
-            var scooter = RentalCompany.StartRent(id);
+            scooter.IsRented = true;
+            var rentedScooter = new RentedScooter(name, DateTime.UtcNow, scooter.PricePerMinute);
+            _context.RentedScooters.Add(rentedScooter);
+            _context.SaveChanges();
 
-            return Ok(scooter);
+            return Created("", rentedScooter);
         }
 
-        [Route("rental/{id}")]
+        [Route("rental/{name}")]
         [HttpPut]
-        public IActionResult EndRent(int id)
+        public IActionResult EndRent(string name)
         {
-            if (ScooterService.GetScooterById(id) == null)
+            var scooter = _context.Scooters.FirstOrDefault(s => s.Name == name);
+
+            if (scooter == null)
             {
                 return NotFound("No such scooter");
             }
 
-            if (!ScooterService.GetScooterById(id).IsRented)
+            if (!scooter.IsRented)
             {
                 return Conflict("Scooter is not rented out");
             }
+            
+            var rentedScooter = _context.RentedScooters.FirstOrDefault(s => s.Name == name);// && !s.EndTime.HasValue);
+            if (rentedScooter == null)
+            {
+                return Conflict("No such scooter");
+            }
 
-            var fee = RentalCompany.EndRent(id);
+            rentedScooter.EndTime = DateTime.UtcNow;
+            var scooterFee = _calculator.ScooterFeeCalculator(rentedScooter.StartTime,
+                (DateTime)rentedScooter.EndTime, rentedScooter.PricePerMinute);
+            scooter.IsRented = false;
+            _context.SaveChanges();
 
-
-            return Ok(fee);
+            return Ok(scooterFee);
         }
 
         [Route("rental")]
         [HttpGet]
         public IActionResult GetAllRentedScooters()
         {
-            return Ok(RentalCompany.GetAllRentedScooters());
+            return Ok(_context.RentedScooters);
         }
 
         [Route("rental/income")]
         [HttpGet]
         public IActionResult CalculateIncome(IncomeRequest request)
         {
-            var income = RentalCompany.CalculateIncome(request.Year, request.IncludeRented);
+            decimal income = 0;
+
+            if (request.Year == null)
+            {
+                foreach (var scooter in _context.RentedScooters)
+                {
+                    if (scooter.EndTime == null)
+                    {
+                        if (request.IncludeRented)
+                        {
+                            income += _calculator.ScooterFeeCalculator(scooter.StartTime,
+                                DateTime.UtcNow,
+                                scooter.PricePerMinute);
+                        }
+                    }
+                    else
+                    {
+                        income += _calculator.ScooterFeeCalculator(scooter.StartTime,
+                            (DateTime)scooter.EndTime,
+                            scooter.PricePerMinute);
+                    }
+                }
+            }
+            else // valid year
+            {
+                foreach (var scooter in _context.RentedScooters)
+                {
+                    if (scooter.EndTime == null)
+                    {
+                        if (request.IncludeRented)
+                        {
+                            income += _calculator.ScooterFeeCalculator(scooter.StartTime,
+                                DateTime.UtcNow,
+                                scooter.PricePerMinute);
+                        }
+                    }
+                    else if (((DateTime)scooter.EndTime).Year == request.Year)
+                    {
+                        income += _calculator.ScooterFeeCalculator(scooter.StartTime,
+                            (DateTime)scooter.EndTime,
+                            scooter.PricePerMinute);
+                    }
+                }
+            }
+
+            _context.SaveChanges();
 
             return Ok(income);
         }

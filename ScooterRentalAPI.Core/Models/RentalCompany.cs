@@ -26,7 +26,7 @@ namespace ScooterRentalAPI.Core.Models
             //}
 
             scooter.IsRented = true;
-            var rentedScooter = new RentedScooter(scooter.Id, DateTime.UtcNow, scooter.PricePerMinute);
+            var rentedScooter = new RentedScooter("a",DateTime.UtcNow, scooter.PricePerMinute);
             _rentedScooters.Add(rentedScooter);
 
             return rentedScooter;

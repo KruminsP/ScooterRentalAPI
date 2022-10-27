@@ -29,6 +29,9 @@ namespace ScooterRentalAPI.Data.Migrations
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("PricePerMinute")
                         .HasColumnType("decimal(18,2)");
 
@@ -49,6 +52,9 @@ namespace ScooterRentalAPI.Data.Migrations
 
                     b.Property<bool>("IsRented")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PricePerMinute")
                         .HasColumnType("decimal(18,2)");

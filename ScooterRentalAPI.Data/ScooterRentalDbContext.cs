@@ -3,7 +3,7 @@ using ScooterRentalAPI.Core.Models;
 
 namespace ScooterRentalAPI.Data
 {
-    public class ScooterRentalDbContext : DbContext
+    public class ScooterRentalDbContext : DbContext, IScooterRentalAPIContext
     {
         public ScooterRentalDbContext(DbContextOptions options): base(options)
         {

@@ -10,7 +10,7 @@ using ScooterRentalAPI.Data;
 namespace ScooterRentalAPI.Data.Migrations
 {
     [DbContext(typeof(ScooterRentalDbContext))]
-    [Migration("20221025133358_Init")]
+    [Migration("20221027091946_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,9 @@ namespace ScooterRentalAPI.Data.Migrations
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PricePerMinute")
                         .HasColumnType("decimal(18,2)");
@@ -51,6 +54,9 @@ namespace ScooterRentalAPI.Data.Migrations
 
                     b.Property<bool>("IsRented")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PricePerMinute")
                         .HasColumnType("decimal(18,2)");

@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScooterRental.tests", "Scoo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScooterRentalAPI", "ScooterRentalAPI\ScooterRentalAPI.csproj", "{ECCF9D91-534F-45EE-AE1B-16FC7A8DE316}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScooterRentalAPI.Data", "ScooterRentalAPI.Data\ScooterRentalAPI.Data.csproj", "{F7A290D0-922A-4F99-B830-3F100B8E4CA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScooterRentalAPI.Data", "ScooterRentalAPI.Data\ScooterRentalAPI.Data.csproj", "{F7A290D0-922A-4F99-B830-3F100B8E4CA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScooterRentalAPI.Core", "ScooterRentalAPI.Core\ScooterRentalAPI.Core.csproj", "{F3CD38E9-73BF-465D-B902-B2DE89BB5ED3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScooterRentalAPI.Core", "ScooterRentalAPI.Core\ScooterRentalAPI.Core.csproj", "{F3CD38E9-73BF-465D-B902-B2DE89BB5ED3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScooterRentalAPI.Services", "ScooterRentalAPI.Services\ScooterRentalAPI.Services.csproj", "{17491FE2-23F3-42EB-87FC-BDAB27BB9786}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F3CD38E9-73BF-465D-B902-B2DE89BB5ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3CD38E9-73BF-465D-B902-B2DE89BB5ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3CD38E9-73BF-465D-B902-B2DE89BB5ED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17491FE2-23F3-42EB-87FC-BDAB27BB9786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17491FE2-23F3-42EB-87FC-BDAB27BB9786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17491FE2-23F3-42EB-87FC-BDAB27BB9786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17491FE2-23F3-42EB-87FC-BDAB27BB9786}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -33,7 +33,8 @@ namespace ScooterRentalAPI
                 options.UseSqlServer(Configuration.GetConnectionString("scooter-rental"));
             });
 
-            services.AddScoped<ScooterRentalDbContext>();
+            services.AddScoped<IScooterRentalAPIContext, ScooterRentalDbContext>();
+            services.AddScoped<Calculators>();
 
             //// Default Policy
             //services.AddCors(options =>

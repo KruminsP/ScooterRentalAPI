@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using ScooterRentalAPI.Core.Models;
+using ScooterRentalAPI.Data;
 
 namespace ScooterRentalAPI.Controllers
 {
@@ -7,13 +9,20 @@ namespace ScooterRentalAPI.Controllers
     [ApiController]
     public class ScooterServiceController : ControllerBase
     {
+        private readonly ScooterRentalDbContext _context;
+
+        public ScooterServiceController(ScooterRentalDbContext context)
+        {
+            _context = context;
+        }
+
         [Route("scooters")]
         [HttpPost]
         public IActionResult PostScooter(Scooter scooter)
         {
-            if (ScooterService.ScooterExists(scooter))
+            if (_context.Scooters.Any(s => s.Name == scooter.Name))
             {
-                return Conflict();
+                return BadRequest("Name should be unique");
             }
 
             if (scooter.PricePerMinute < 0)
@@ -21,16 +30,17 @@ namespace ScooterRentalAPI.Controllers
                 return BadRequest("Price cannot be negative");
             }
 
-            ScooterService.AddScooter(scooter);
+            _context.Scooters.Add(scooter);
+            _context.SaveChanges();
+
             return Created("", scooter);
         }
 
-        [Route("scooters/{id}")]
+        [Route("scooters/{name}")]
         [HttpGet]
-        public IActionResult GetScooter(int id)
+        public IActionResult GetScooter(string name)
         {
-            var scooter = ScooterService.GetScooterById(id);
-
+            var scooter = _context.Scooters.FirstOrDefault(s => s.Name == name);
             if (scooter == null)
             {
                 return NotFound();
@@ -39,11 +49,16 @@ namespace ScooterRentalAPI.Controllers
             return Ok(scooter);
         }
 
-        [Route("scooters/{id}")]
+        [Route("scooters/{name}")]
         [HttpDelete]
-        public IActionResult DeleteScooter(int id)
+        public IActionResult DeleteScooter(string name)
         {
-            ScooterService.RemoveScooter(id);
+            var scooter = _context.Scooters.FirstOrDefault(s => s.Name == name);
+            if (scooter != null)
+            {
+                _context.Scooters.Remove(scooter);
+                _context.SaveChanges();
+            }
 
             return Ok();
         }
@@ -52,7 +67,7 @@ namespace ScooterRentalAPI.Controllers
         [HttpGet]
         public IActionResult GetAllScooters()
         {
-            var scooters = ScooterService.GetScooters();
+            var scooters = _context.Scooters;
             return Ok(scooters);
         }
     }
