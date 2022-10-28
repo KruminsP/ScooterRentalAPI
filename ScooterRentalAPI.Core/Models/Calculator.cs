@@ -1,24 +1,17 @@
-﻿using ScooterRentalAPI.Core.Services;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ScooterRentalAPI.Core.Models
 {
     public class Calculator
     {
-        private readonly IRentalService _rentalService;
-
-        public Calculator(IRentalService rentalService)
-        {
-            _rentalService = rentalService;
-        }
-
-        public decimal CalculateIncome(IncomeRequest request)
+        public decimal CalculateIncome(IncomeRequest request, List<RentedScooter> scooters)
         {
             decimal income = 0;
 
             if (request.Year == null)
             {
-                foreach (var scooter in _rentalService.GetAll())
+                foreach (var scooter in scooters)
                 {
                     if (scooter.EndTime == null)
                     {
@@ -39,7 +32,7 @@ namespace ScooterRentalAPI.Core.Models
             }
             else // valid year
             {
-                foreach (var scooter in _rentalService.GetAll())
+                foreach (var scooter in scooters)
                 {
                     if (scooter.EndTime == null)
                     {

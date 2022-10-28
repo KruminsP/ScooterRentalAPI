@@ -2,6 +2,7 @@
 using ScooterRentalAPI.Core.Models;
 using ScooterRentalAPI.Core.Services;
 using System;
+using System.Linq;
 
 namespace ScooterRentalAPI.Controllers
 {
@@ -86,7 +87,7 @@ namespace ScooterRentalAPI.Controllers
         [HttpGet]
         public IActionResult CalculateIncome(IncomeRequest request)
         {
-            var income = _calculator.CalculateIncome(request);
+            var income = _calculator.CalculateIncome(request, _rentalService.GetAll());
 
             return Ok(income);
         }
